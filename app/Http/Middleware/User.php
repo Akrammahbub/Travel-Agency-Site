@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Illuminate\Support\Facades\Auth;
+use Auth;
 
 class User
 {
@@ -16,8 +16,8 @@ class User
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(!Auth::guard('user')->check()) {
-            return redirect()->route('user_login')->with('error','You are not authorized!');
+        if(!Auth::guard('web')->check()) {
+            return redirect()->route('login')->with('error','You are not authorized!');
         }
         return $next($request);
     }

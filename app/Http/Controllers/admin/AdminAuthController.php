@@ -4,11 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
+use Auth;
+use Hash;
 use App\Models\Admin;
 use App\Mail\Websitemail;
-use Illuminate\Support\Facades\Mail;
 
 class AdminAuthController extends Controller
 {
@@ -49,38 +48,45 @@ class AdminAuthController extends Controller
     }
 
     public function profile_submit(Request $request)
-    {
+{
+    $request->validate([
+        'name' => ['required'],
+        'email' => ['required', 'email'],
+    ]);
+
+    $admin = Admin::where('id', Auth::guard('admin')->user()->id)->first();
+
+    if ($request->photo) {
         $request->validate([
-            'name' => ['required'],
-            'email' => ['required', 'email'],
+            'photo' => ['mimes:jpg,jpeg,png,gif', 'max:2024'],
         ]);
-
-        $admin = Admin::where('id',Auth::guard('admin')->user()->id)->first();
-
-        if($request->photo) {
-            $request->validate([
-                'photo' => ['mimes:jpg,jpeg,png,gif','max:2024'],
-            ]);
-            $final_name = 'admin_'.time().'.'.$request->photo->extension();
-            $request->photo->move(public_path('uploads'), $final_name);
-            unlink(public_path('uploads/'.$admin->photo));
-            $admin->photo = $final_name;
-        }
-
-        if($request->password) {
-            $request->validate([
-                'password' => ['required'],
-                'confirm_password' => ['required','same:password'],
-            ]);
-            $admin->password = Hash::make($request->password);
-        }
+    
+        $final_name = 'admin_' . time() . '.' . $request->photo->extension();
+        $request->photo->move(public_path('uploads'), $final_name);
+    
         
-        $admin->name = $request->name;
-        $admin->email = $request->email;
-        $admin->update();
-
-        return redirect()->back()->with('success','Profile is updated!');
+        if ($admin->photo && file_exists(public_path('uploads/' . $admin->photo))) {
+            unlink(public_path('uploads/' . $admin->photo));
+        }
+    
+        $admin->photo = $final_name;
     }
+
+    if ($request->password) {
+        $request->validate([
+            'password' => ['required'],
+            'confirm_password' => ['required', 'same:password'],
+        ]);
+        $admin->password = Hash::make($request->password);
+    }
+
+    $admin->name = $request->name;
+    $admin->email = $request->email;
+    $admin->update();
+
+    return redirect()->back()->with('success', 'Profile is updated!');
+}
+
 
     public function forget_password()
     {
@@ -107,7 +113,7 @@ class AdminAuthController extends Controller
         $message = "To reset password, please click on the link below:<br>";
         $message .= "<a href='".$reset_link."'>Click Here</a>";
 
-        Mail::to($request->email)->send(new Websitemail($subject,$message));
+        \Mail::to($request->email)->send(new Websitemail($subject,$message));
 
         return redirect()->back()->with('success','We have sent a password reset link to your email. Please check your email. If you do not find the email in your inbox, please check your spam folder.');
     }

@@ -1,17 +1,19 @@
-@extends ('front.layout.master')
+@extends('front.layout.master')
 
 @section('main_content')
-
-<div class="page-top" style="background-image: url('uploads/banner.jpg')">
+@php
+$setting = App\Models\Setting::where('id',1)->first();
+@endphp
+<div class="page-top" style="background-image: url('{{ asset("uploads/{$setting->banner}") }}');">
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <h2>Pat Flynn</h2>
+                <h2>{{ $team_member->name }}</h2>
                 <div class="breadcrumb-container">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                        <li class="breadcrumb-item"><a href="volunteers.html">Volunteers</a></li>
-                        <li class="breadcrumb-item active">Pat Flynn</li>
+                        <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('team_members') }}">Team Members</a></li>
+                        <li class="breadcrumb-item active">{{ $team_member->name }}</li>
                     </ol>
                 </div>
             </div>
@@ -25,7 +27,7 @@
         <div class="row">
             <div class="col-md-3">
                 <div class="photo">
-                    <img src="uploads/team-2.jpg" alt="">
+                    <img src="{{ asset('uploads/'.$team_member->photo) }}" alt="">
                 </div>
             </div>
             <div class="col-md-9">
@@ -33,53 +35,57 @@
                     <table class="table table-bordered">
                         <tr>
                             <td>Name</td>
-                            <td>Pat Flynn</td>
+                            <td>{{ $team_member->name }}</td>
                         </tr>
                         <tr>
                             <td>Designation</td>
-                            <td>Founder</td>
+                            <td>{{ $team_member->designation }}</td>
                         </tr>
                         <tr>
                             <td>Address</td>
-                            <td>932 Pine Tree Lane, Chevy Chase, MD 20815</td>
+                            <td>{{ $team_member->address }}</td>
                         </tr>
                         <tr>
                             <td>Email Address</td>
-                            <td>patflynn@gmail.com</td>
+                            <td>{{ $team_member->email }}</td>
                         </tr>
                         <tr>
                             <td>Phone</td>
-                            <td>121-343-5656</td>
+                            <td>{{ $team_member->phone }}</td>
                         </tr>
+                        @if($team_member->facebook != '' || $team_member->twitter != '' || $team_member->linkedin != '' || $team_member->instagram != '')
                         <tr>
                             <td>Social Media</td>
                             <td>
                                 <ul>
-                                    <li><a href="" target="_blank"><i class="fab fa-facebook-f"></i></a></li>
-                                    <li><a href="" target="_blank"><i class="fab fa-twitter"></i></a></li>
-                                    <li><a href="" target="_blank"><i class="fab fa-linkedin-in"></i></a></li>
-                                    <li><a href="" target="_blank"><i class="fab fa-instagram"></i></a></li>
+                                    @if($team_member->facebook != '')
+                                    <li><a href="{{ $team_member->facebook }}" target="_blank"><i class="fab fa-facebook-f"></i></a></li>
+                                    @endif
+                                    @if($team_member->twitter != '')
+                                    <li><a href="{{ $team_member->twitter }}" target="_blank"><i class="fab fa-twitter"></i></a></li>
+                                    @endif
+                                    @if($team_member->linkedin != '')
+                                    <li><a href="{{ $team_member->linkedin }}" target="_blank"><i class="fab fa-linkedin-in"></i></a></li>
+                                    @endif
+                                    @if($team_member->instagram != '')
+                                    <li><a href="{{ $team_member->instagram }}" target="_blank"><i class="fab fa-instagram"></i></a></li>
+                                    @endif
                                 </ul>
                             </td>
                         </tr>
+                        @endif
                     </table>
                 </div>
             </div>
-
+        
             <div class="col-md-12 mt_30">
                 <h4>Biography</h4>
                 <div class="description">
-                    <p>
-                        Lorem ipsum dolor sit amet, et ius explicari persequeris, an per novum noluisse hendrerit, atqui regione laboramus ea eum. Rebum tractatos ne qui, quis volumus pri an. Vim id idque partem, primis accumsan voluptatum vix ea, id vis zril tibique conclusionemque. Blandit pertinacia in has, cu duo quod deleniti. Vix quas referrentur cu.
-                    </p>
-                    <p>
-                        Nec purto lobortis ad, mei ea molestie constituto accommodare, deserunt persecuti voluptaria mei ei. In diceret fierent adversarium duo, in homero dissentias vim. Ea nam lucilius liberavisse. At his erant utamur, eam persius laoreet no. Te ubique persecuti usu, cum aliquip aliquando signiferumque eu, ei tale ludus per. Vix at argumentum comprehensam, veri nullam evertitur ne vel.
-                    </p>
+                    {!! $team_member->biography !!}
                 </div>
             </div>
 
         </div>
     </div>
 </div>
-
 @endsection

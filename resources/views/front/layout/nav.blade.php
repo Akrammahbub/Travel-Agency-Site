@@ -28,7 +28,7 @@
                                     <a href="{{route(name: 'packages')}}" class="nav-link">Packages</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{route(name: 'team-members')}}" class="nav-link">Team</a>
+                                    <a href="{{route(name: 'team_members')}}" class="nav-link">Team</a>
                                 </li>
                                 <li class="nav-item">
                                     <a href="{{route(name: 'faq')}}" class="nav-link">FAQ</a>

@@ -20,8 +20,8 @@ class DatabaseSeeder extends Seeder
     //         'email' => 'test@example.com',
     //     ]);
     // }
-    public function run(): void
+    public function run()
     {
-        $this->call([AdminSeeder::class]);
+        $this->call([ContactItemSeeder::class,]);
     }
 }
